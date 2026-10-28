@@ -255,75 +255,153 @@ def generate_all_figures():
     img.save(p28)
     figs["2.8"] = p28
 
-    # 7. Hình 2.9 & 3.3: Ảnh chụp giao diện Dashboard (Sử dụng ảnh chụp thực tế của người dùng hoặc vẽ Dashboard chuẩn HD)
+    # 7. Hình 2.9 & 3.3: Giao diện Dashboard đồ họa thật (Đồng hồ bán nguyệt, biểu đồ tròn, bảng kẻ ô, không dùng emoji gây lỗi ô vuông)
     user_dash_img = r"C:\Users\Trung\.gemini\antigravity\brain\b394b9d2-495d-45ba-aa83-074088fd3b4f\.user_uploaded\media_1793169462881_d3ddad65.png"
-    # Vẽ hình Dashboard HD hoàn chỉnh sau khi sửa bố cục 3 tầng cân đối
-    img = Image.new("RGB", (1200, 760), (9, 13, 22))
+    img = Image.new("RGB", (1240, 820), (9, 13, 22))
     d = ImageDraw.Draw(img)
-    d.rectangle((0, 0, 1200, 50), fill=(15, 23, 42))
-    d.text((25, 14), "🏠 Hệ Thống IoT Giám Sát Điện Năng Gia Đình (Node-RED Dashboard - http://127.0.0.1:1880/ui)",
-           fill=(56, 189, 248), font=get_font(20, bold=True))
-    # Tầng 1: Group 1 & Group 2
-    draw_box(d, (20, 65, 590, 315), (17, 24, 39), (30, 41, 59),
-             "⚡ 1. Thông Số Điện Lưới Thời Gian Thực (PZEM-004T)", [
-                 "  [Đồng hồ Điện Áp: 221.9 V]        [Đồng hồ Tổng Công Suất: 1,666 W]",
-                 "",
-                 "  ┌──────────────┬──────────────┬──────────────┬──────────────┐",
-                 "  │ Dòng điện(I) │  Tần số (f)  │ Hệ số Cos(φ) │ Aptomat Tổng │",
-                 "  │    7.90 A    │   50.0 Hz    │     0.95     │      ON      │",
-                 "  └──────────────┴──────────────┴──────────────┴──────────────┘"
-             ], title_color=(56, 189, 248), text_color=(241, 245, 249))
-    draw_box(d, (610, 65, 1180, 315), (17, 24, 39), (30, 41, 59),
-             "💰 2. Chi Phí Tiêu Thụ & Điều Khiển Hai Chiều (MQTT)", [
-                 "  🔋 Điện năng tích lũy: 128.281 kWh   |   💵 Tiền điện EVN (gồm VAT): 264,475 VNĐ",
-                 "  🛡️ Trạng thái: 🟢 HỆ THỐNG BÌNH THƯỜNG (Ổn định)           [Ngưỡng: 3000 W]",
-                 "  ⚠️ Cài đặt ngưỡng báo quá tải (W):  ───────────●──────── (3000 W)",
-                 "  🎭 Kịch bản giả lập tải:            [ 🏠 1. Sinh hoạt bình thường (~1.2kW - 2.1kW) ▼ ]",
-                 "  🔌 Đóng / Ngắt Aptomat Tổng Từ Xa:  [ BẬT (ON) ● ]"
-             ], title_color=(56, 189, 248), text_color=(241, 245, 249))
-    # Tầng 2: Group 3 (Charts)
-    draw_box(d, (20, 330, 1180, 530), (17, 24, 39), (30, 41, 59),
-             "📈 3. Biểu Đồ Phân Tích Công Suất Trực Tuyến (Line Chart 4 Kênh & Pie Chart Tỷ Trọng Phòng)", [
-                 "  [Đồ thị Đường (W): ── Tổng công suất (1666W)  ── Nhà bếp (785W)  ── Phòng ngủ (539W)  ── Phòng khách (342W)]",
-                 "  4000W ┤                                      ╭─────────╮ (Đỉnh cao điểm 3980W)",
-                 "  2000W ┤  ╭───╮ ╭──────╮ ╭────────────────────╯         ╰──────────────────────",
-                 "     0W ┼──┴───┴─┴──────┴─┴─────────────────────────────────────────────────────",
-                 "  [Biểu đồ Tròn Tỷ Trọng]:  ■ Nhà bếp: 47.1% (785W)   ■ Phòng ngủ: 32.4% (539W)   ■ Phòng khách: 20.5% (342W)"
-             ], title_color=(56, 189, 248), text_color=(226, 232, 240))
-    # Tầng 3: Group 4 (MySQL Table)
-    draw_box(d, (20, 545, 1180, 745), (17, 24, 39), (30, 41, 59),
-             "🗄️ 4. Lịch Sử Lưu Trữ Cơ Sở Dữ Liệu MySQL (smart_energy_db - Bảng energy_logs)", [
-                 "  [🔄 Tải 12 bản ghi mới nhất từ MySQL]  [⚠️ Lọc lịch sử Quá tải / Sự cố]   📊 U_tb = 218.5V | P_max = 4120W",
-                 "  ──────────────────────────────────────────────────────────────────────────────────────────────────────",
-                 "   ID  | Thời gian ghi MySQL | Điện áp | Dòng (I) | Tổng P  | Điện năng  | P.Khách | Nhà bếp | P.Ngủ | Trạng thái",
-                 "  #45  | 2026-10-28 13:38:12 | 221.9 V |  7.90 A  | 1666 W  | 128.28 kWh |  342 W  |  785 W  | 539 W |   NORMAL",
-                 "  #44  | 2026-10-28 13:37:54 | 214.6 V | 20.38 A  | 3980 W  | 128.19 kWh |  520 W  | 2150 W  |1310 W |  OVERLOAD"
-             ], title_color=(56, 189, 248), text_color=(226, 232, 240))
+    d.rectangle((0, 0, 1240, 48), fill=(15, 23, 42))
+    d.text((24, 13), "GIÁM SÁT ĐIỆN NĂNG GIA ĐÌNH  |  Node-RED Dashboard (http://127.0.0.1:1880/ui)",
+           fill=(56, 189, 248), font=get_font(19, bold=True))
+
+    # Group 1: Thông số điện lưới (Trái trên)
+    d.rounded_rectangle((18, 62, 608, 332), radius=10, fill=(17, 24, 39), outline=(30, 41, 59), width=2)
+    d.text((34, 74), "1. Thông Số Điện Lưới Thời Gian Thực (PZEM-004T)", fill=(56, 189, 248), font=get_font(17, bold=True))
+    # Gauge 1: Điện áp
+    d.text((115, 108), "Điện Áp Lưới (U)", fill=(203, 213, 225), font=get_font(15, bold=True))
+    d.pieslice((95, 132, 245, 282), start=180, end=360, fill=(16, 185, 129))
+    d.pieslice((122, 159, 218, 255), start=180, end=360, fill=(17, 24, 39))
+    d.rectangle((95, 208, 245, 285), fill=(17, 24, 39))
+    d.text((135, 185), "221.9 V", fill=(255, 255, 255), font=get_font(19, bold=True))
+    d.text((95, 212), "175V", fill=(148, 163, 184), font=get_font(12))
+    d.text((220, 212), "250V", fill=(148, 163, 184), font=get_font(12))
+
+    # Gauge 2: Công suất
+    d.text((370, 108), "Tổng Công Suất (P)", fill=(203, 213, 225), font=get_font(15, bold=True))
+    d.pieslice((370, 132, 520, 282), start=180, end=360, fill=(51, 65, 85))
+    d.pieslice((370, 132, 520, 282), start=180, end=255, fill=(16, 185, 129))
+    d.pieslice((397, 159, 493, 255), start=180, end=360, fill=(17, 24, 39))
+    d.rectangle((370, 208, 520, 285), fill=(17, 24, 39))
+    d.text((408, 185), "1666 W", fill=(255, 255, 255), font=get_font(19, bold=True))
+    d.text((370, 212), "0W", fill=(148, 163, 184), font=get_font(12))
+    d.text((490, 212), "4500W", fill=(148, 163, 184), font=get_font(12))
+
+    # 4 KPI Cards ở đáy Group 1
+    kpi1 = [
+        ("Dòng điện (I)", "7.90 A", (56, 189, 248)),
+        ("Tần số (f)", "50.0 Hz", (248, 250, 252)),
+        ("Hệ số Cos(φ)", "0.95", (52, 211, 153)),
+        ("Aptomat Tổng", "ON", (52, 211, 153))
+    ]
+    for idx, (kl, kv, kc) in enumerate(kpi1):
+        kx = 32 + idx * 142
+        d.rounded_rectangle((kx, 245, kx + 132, 316), radius=8, fill=(30, 41, 59), outline=(51, 65, 85))
+        d.text((kx + 12, 254), kl, fill=(148, 163, 184), font=get_font(13))
+        d.text((kx + 12, 280), kv, fill=kc, font=get_font(18, bold=True))
+
+    # Group 2: Chi phí & Điều khiển (Phải trên)
+    d.rounded_rectangle((624, 62, 1222, 332), radius=10, fill=(17, 24, 39), outline=(30, 41, 59), width=2)
+    d.text((640, 74), "2. Chi Phí Tiêu Thụ & Điều Khiển Hai Chiều (MQTT)", fill=(56, 189, 248), font=get_font(17, bold=True))
+    d.rounded_rectangle((640, 106, 915, 168), radius=8, fill=(30, 41, 59), outline=(51, 65, 85))
+    d.text((654, 114), "Điện năng tích lũy (Công tơ)", fill=(148, 163, 184), font=get_font(13))
+    d.text((654, 136), "128.281 kWh", fill=(56, 189, 248), font=get_font(19, bold=True))
+
+    d.rounded_rectangle((930, 106, 1206, 168), radius=8, fill=(30, 41, 59), outline=(51, 65, 85))
+    d.text((944, 114), "Tiền điện bậc thang EVN (+8% VAT)", fill=(148, 163, 184), font=get_font(13))
+    d.text((944, 136), "264,475 VNĐ", fill=(251, 191, 36), font=get_font(19, bold=True))
+
+    d.rounded_rectangle((640, 178, 1206, 212), radius=6, fill=(6, 78, 59), outline=(16, 185, 129))
+    d.text((654, 186), "TRẠNG THÁI: HỆ THỐNG BÌNH THƯỜNG (Ổn định)                Ngưỡng: 3000 W",
+           fill=(52, 211, 153), font=get_font(14, bold=True))
+
+    d.text((640, 224), "Cài đặt ngưỡng báo quá tải (W):", fill=(226, 232, 240), font=get_font(14))
+    d.line([(920, 233), (1180, 233)], fill=(56, 189, 248), width=4)
+    d.ellipse((1072, 225, 1088, 241), fill=(56, 189, 248))
+
+    d.text((640, 256), "Kịch bản giả lập tải:", fill=(226, 232, 240), font=get_font(14))
+    d.rounded_rectangle((880, 250, 1206, 280), radius=5, fill=(30, 41, 59), outline=(71, 85, 105))
+    d.text((892, 256), "1. Sinh hoạt bình thường (~1.2kW - 2.1kW)", fill=(248, 250, 252), font=get_font(13))
+
+    d.text((640, 294), "Đóng / Ngắt Aptomat Tổng Từ Xa (MQTT Relay):", fill=(226, 232, 240), font=get_font(14))
+    d.rounded_rectangle((1140, 290, 1196, 316), radius=13, fill=(2, 132, 199))
+    d.ellipse((1170, 293, 1192, 313), fill=(255, 255, 255))
+
+    # Group 3: Biểu đồ trực tuyến (Tầng 2)
+    d.rounded_rectangle((18, 346, 1222, 566), radius=10, fill=(17, 24, 39), outline=(30, 41, 59), width=2)
+    d.text((34, 358), "3. Biểu Đồ Phân Tích Công Suất Trực Tuyến", fill=(56, 189, 248), font=get_font(17, bold=True))
+    d.text((50, 388), "Đồ Thị Biến Thiên Công Suất Thời Gian Thực (W)  [Đỏ: Tổng P | Cam: Nhà bếp | Xanh lá: P.Ngủ | Xanh lam: P.Khách]",
+           fill=(203, 213, 225), font=get_font(13, bold=True))
+    d.line([(70, 415), (70, 540), (790, 540)], fill=(100, 116, 139), width=2)
+    pts_total = [(70, 495), (160, 488), (250, 492), (340, 430), (430, 425), (520, 485), (610, 490), (700, 486), (780, 484)]
+    pts_kitch = [(70, 515), (160, 512), (250, 514), (340, 470), (430, 468), (520, 510), (610, 512), (700, 510), (780, 509)]
+    d.line(pts_total, fill=(239, 68, 68), width=3)
+    d.line(pts_kitch, fill=(245, 158, 11), width=2)
+
+    d.text((860, 388), "Tỷ Trọng Công Suất Các Phòng (W)", fill=(203, 213, 225), font=get_font(14, bold=True))
+    d.pieslice((910, 415, 1050, 555), start=0, end=170, fill=(245, 158, 11))
+    d.pieslice((910, 415, 1050, 555), start=170, end=285, fill=(16, 185, 129))
+    d.pieslice((910, 415, 1050, 555), start=285, end=360, fill=(56, 189, 248))
+    d.ellipse((948, 453, 1012, 517), fill=(17, 24, 39))
+    d.text((1068, 435), "Nhà bếp (47%)", fill=(245, 158, 11), font=get_font(13, bold=True))
+    d.text((1068, 468), "Phòng ngủ (32%)", fill=(16, 185, 129), font=get_font(13, bold=True))
+    d.text((1068, 501), "Phòng khách (21%)", fill=(56, 189, 248), font=get_font(13, bold=True))
+
+    # Group 4: Bảng MySQL (Tầng 3)
+    d.rounded_rectangle((18, 580, 1222, 804), radius=10, fill=(17, 24, 39), outline=(30, 41, 59), width=2)
+    d.text((34, 592), "4. Lịch Sử Lưu Trữ Cơ Sở Dữ Liệu MySQL (smart_energy_db - Bảng energy_logs)",
+           fill=(56, 189, 248), font=get_font(17, bold=True))
+    d.rounded_rectangle((34, 622, 310, 654), radius=6, fill=(2, 132, 199))
+    d.text((52, 630), "Tải 12 bản ghi mới nhất từ MySQL", fill=(255, 255, 255), font=get_font(13, bold=True))
+    d.rounded_rectangle((325, 622, 585, 654), radius=6, fill=(217, 119, 6))
+    d.text((348, 630), "Lọc lịch sử Quá tải / Sự cố", fill=(255, 255, 255), font=get_font(13, bold=True))
+    d.text((650, 630), "Thống kê truy vấn MySQL: Hiển thị 12 bản ghi | U_tb = 218.5V | P_max = 4120W",
+           fill=(226, 232, 240), font=get_font(13, bold=True))
+
+    d.rectangle((34, 666, 1206, 698), fill=(15, 23, 42))
+    d.text((46, 674), "Mã ID     Thời gian ghi (MySQL)        Điện áp      Dòng (I)     Tổng P       Điện năng        Cos(φ)      P.Khách    Nhà bếp    P.Ngủ     Aptomat     Trạng thái",
+           fill=(56, 189, 248), font=get_font(13, bold=True))
+    sql_rows = [
+        ("#45      2026-10-28 13:38:12         221.9 V      7.90 A       1666 W       128.281 kWh       0.95       342 W      785 W      539 W       ON         NORMAL", (226, 232, 240)),
+        ("#44      2026-10-28 13:37:54         214.6 V     20.38 A       3980 W       128.195 kWh       0.91       520 W     2150 W     1310 W       ON         OVERLOAD", (248, 113, 113)),
+        ("#43      2026-10-28 13:37:36         189.4 V      8.98 A       1530 W       128.110 kWh       0.90       310 W      740 W      480 W       ON         UNDER_VOLTAGE", (251, 191, 36)),
+    ]
+    ry = 708
+    for r_txt, r_col in sql_rows:
+        d.text((46, ry), r_txt, fill=r_col, font=get_font(13, bold=True))
+        d.line([(34, ry + 24), (1206, ry + 24)], fill=(30, 41, 59), width=1)
+        ry += 30
+
     p_dash = os.path.join(IMG_DIR, "fig_dashboard_hd.png")
     img.save(p_dash)
     figs["2.9"] = p_dash
     figs["3.1"] = user_dash_img if os.path.exists(user_dash_img) else p_dash
     figs["3.3"] = p_dash
 
-    # 8. Hình 3.2: Màn hình Terminal chạy Python Simulator & MQTT Broker
-    img = Image.new("RGB", (1100, 400), (15, 23, 42))
+    # 8. Hình 3.2: Màn hình Terminal chạy Python Simulator & MQTT Broker (Chuẩn Command Prompt, không ký tự lỗi)
+    img = Image.new("RGB", (1120, 420), (12, 12, 12))
     d = ImageDraw.Draw(img)
-    draw_box(d, (15, 15, 1085, 385), (15, 23, 42), (56, 189, 248),
-             "TERMINAL: PYTHON VIRTUAL SENSOR (sensor_simulator.py) & MOSQUITTO MQTT BROKER (Port 1883)", [
-                 "================================================================================",
-                 "✅ [PYTHON-SIMULATOR] Đã kết nối tới MQTT Broker (127.0.0.1:1883)",
-                 "📡 Đang lắng nghe lệnh điều khiển tại topic: home/energy/control",
-                 "📤 Đang phát dữ liệu cảm biến tại topic:     home/energy/telemetry",
-                 "================================================================================",
-                 "⚡ [2026-10-28 13:35:21] U=221.2V | I=7.19A  | P=1415.0W | E=125.184kWh | Relay=ON  | Mode=normal",
-                 "⚡ [2026-10-28 13:35:23] U=221.9V | I=7.90A  | P=1666.0W | E=125.211kWh | Relay=ON  | Mode=normal",
-                 "📥 [MQTT CONTROL] Nhận lệnh từ Node-RED: {\"scenario\": \"overload\"}",
-                 "🎭 [SCENARIO] Chuyển kịch bản mô phỏng sang: OVERLOAD",
-                 "⚡ [2026-10-28 13:35:25] U=214.6V | I=20.38A | P=3980.0W | E=125.277kWh | Relay=ON  | Mode=overload",
-                 "📥 [MQTT CONTROL] Nhận lệnh từ Node-RED: {\"relay\": false}",
-                 "🔌 [RELAY] Aptomat tổng đã chuyển sang trạng thái: NGẮT ĐIỆN (OFF)",
-                 "⚡ [2026-10-28 13:35:27] U=222.1V | I=0.00A  | P=0.0W    | E=125.277kWh | Relay=OFF | Mode=overload"
-             ], title_color=(52, 211, 153), text_color=(226, 232, 240))
+    d.rectangle((0, 0, 1120, 36), fill=(30, 41, 59))
+    d.text((16, 8), "Command Prompt - python simulator/sensor_simulator.py (Mosquitto MQTT Port 1883)",
+           fill=(248, 250, 252), font=get_font(16, bold=True))
+    cmd_lines = [
+        ("C:\\iot-energy-monitor> python simulator/sensor_simulator.py", (226, 232, 240)),
+        ("================================================================================", (100, 116, 139)),
+        ("[OK]  [PYTHON-SIMULATOR] Đã kết nối tới Mosquitto MQTT Broker (127.0.0.1:1883)", (52, 211, 153)),
+        ("[SUB] Đang lắng nghe lệnh điều khiển tại topic : home/energy/control", (56, 189, 248)),
+        ("[PUB] Đang phát dữ liệu cảm biến tại topic     : home/energy/telemetry", (56, 189, 248)),
+        ("================================================================================", (100, 116, 139)),
+        ("[2026-10-28 13:35:21] U=221.2V | I=7.19A  | P=1415.0W | E=125.184kWh | Relay=ON  | Mode=normal", (241, 245, 249)),
+        ("[2026-10-28 13:35:23] U=221.9V | I=7.90A  | P=1666.0W | E=125.211kWh | Relay=ON  | Mode=normal", (241, 245, 249)),
+        ("[MQTT CONTROL] Nhận lệnh từ Node-RED: {\"scenario\": \"overload\"}", (251, 191, 36)),
+        ("--> [SCENARIO] Chuyển kịch bản mô phỏng sang: OVERLOAD (Cao điểm quá tải)", (251, 191, 36)),
+        ("[2026-10-28 13:35:25] U=214.6V | I=20.38A | P=3980.0W | E=125.277kWh | Relay=ON  | Mode=overload", (248, 113, 113)),
+        ("[MQTT CONTROL] Nhận lệnh từ Node-RED: {\"relay\": false}", (251, 191, 36)),
+        ("--> [RELAY] Aptomat tổng đã chuyển sang trạng thái: NGẮT ĐIỆN (OFF)", (248, 113, 113)),
+        ("[2026-10-28 13:35:27] U=222.1V | I=0.00A  | P=0.0W    | E=125.277kWh | Relay=OFF | Mode=overload", (148, 163, 184)),
+    ]
+    cy = 50
+    for line_txt, col in cmd_lines:
+        d.text((20, cy), line_txt, fill=col, font=get_font(15, bold=True))
+        cy += 25
     p32 = os.path.join(IMG_DIR, "fig3_2_terminal.png")
     img.save(p32)
     figs["3.2"] = p32
@@ -648,8 +726,13 @@ def main():
         for ci, val in enumerate(r_data):
             set_cell_text(doc.tables[8].rows[ri].cells[ci], val, bold=(ri == 5))
 
-    doc.save(OUT_DOCX)
-    print(f"✅ Đã xuất thành công file Word hoàn chỉnh tại: {OUT_DOCX}")
+    try:
+        doc.save(OUT_DOCX)
+        print(f"✅ Đã cập nhật trực tiếp file Word tại: {OUT_DOCX}")
+    except PermissionError:
+        alt_docx = OUT_DOCX.replace(".docx", "_FIXED.docx")
+        doc.save(alt_docx)
+        print(f"✅ File gốc đang mở trong Word nên đã lưu bản mới tại: {alt_docx}")
 
 
 if __name__ == "__main__":
