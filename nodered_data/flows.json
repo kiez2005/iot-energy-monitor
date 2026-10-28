@@ -1,0 +1,843 @@
+[
+    {
+        "id": "tab_smart_energy",
+        "type": "tab",
+        "label": "Hệ Thống Giám Sát Điện Năng IoT",
+        "disabled": false,
+        "info": "Đề tài: Giám sát điện năng tiêu thụ trong gia đình (Python + Mosquitto MQTT + Node-RED + MySQL)"
+    },
+    {
+        "id": "mqtt_broker_local",
+        "type": "mqtt-broker",
+        "name": "Mosquitto Local (127.0.0.1:1883)",
+        "broker": "127.0.0.1",
+        "port": "1883",
+        "clientid": "NodeRED_Energy_Center",
+        "autoConnect": true,
+        "usetls": false,
+        "protocolVersion": "4",
+        "keepalive": "60",
+        "cleansession": true,
+        "autoUnsubscribe": true
+    },
+    {
+        "id": "mysql_db_config",
+        "type": "MySQLdatabase",
+        "name": "MySQL smart_energy_db",
+        "host": "127.0.0.1",
+        "port": "3306",
+        "db": "smart_energy_db",
+        "tz": "local",
+        "charset": "UTF8"
+    },
+    {
+        "id": "ui_base_config",
+        "type": "ui_base",
+        "theme": {
+            "name": "theme-dark",
+            "lightTheme": {
+                "default": "#0094CE",
+                "baseColor": "#0094CE",
+                "baseFont": "-apple-system,BlinkMacSystemFont,Segoe UI,Roboto,Oxygen-Sans,Ubuntu,Cantarell,Helvetica Neue,sans-serif",
+                "edited": true
+            },
+            "darkTheme": {
+                "default": "#097479",
+                "baseColor": "#0ea5e9",
+                "baseFont": "-apple-system,BlinkMacSystemFont,Segoe UI,Roboto,Oxygen-Sans,Ubuntu,Cantarell,Helvetica Neue,sans-serif",
+                "edited": true,
+                "reset": false
+            },
+            "customTheme": {
+                "name": "Untitled Theme 1",
+                "default": "#4B7930",
+                "baseColor": "#4B7930",
+                "baseFont": "-apple-system,BlinkMacSystemFont,Segoe UI,Roboto,Oxygen-Sans,Ubuntu,Cantarell,Helvetica Neue,sans-serif"
+            },
+            "themeState": {
+                "base-color": {
+                    "default": "#097479",
+                    "value": "#0ea5e9",
+                    "edited": true
+                },
+                "page-titlebar-backgroundColor": {
+                    "value": "#0f172a",
+                    "edited": true
+                },
+                "page-backgroundColor": {
+                    "value": "#090d16",
+                    "edited": true
+                },
+                "page-sidebar-backgroundColor": {
+                    "value": "#1e293b",
+                    "edited": true
+                },
+                "group-textColor": {
+                    "value": "#38bdf8",
+                    "edited": true
+                },
+                "group-borderColor": {
+                    "value": "#1e293b",
+                    "edited": true
+                },
+                "group-backgroundColor": {
+                    "value": "#111827",
+                    "edited": true
+                },
+                "widget-textColor": {
+                    "value": "#f8fafc",
+                    "edited": true
+                },
+                "widget-backgroundColor": {
+                    "value": "#0284c7",
+                    "edited": true
+                },
+                "widget-borderColor": {
+                    "value": "#111827",
+                    "edited": true
+                },
+                "base-font": {
+                    "value": "-apple-system,BlinkMacSystemFont,Segoe UI,Roboto,Oxygen-Sans,Ubuntu,Cantarell,Helvetica Neue,sans-serif"
+                }
+            },
+            "angularTheme": {
+                "primary": "indigo",
+                "accents": "blue",
+                "warn": "red",
+                "background": "grey",
+                "palette": "dark"
+            }
+        },
+        "site": {
+            "name": "Hệ Thống IoT Giám Sát Điện Năng Gia Đình",
+            "hideToolbar": "false",
+            "allowSwipe": "false",
+            "lockMenu": "false",
+            "allowTempTheme": "true",
+            "dateFormat": "DD/MM/YYYY",
+            "sizes": {
+                "sx": 52,
+                "sy": 50,
+                "gx": 12,
+                "gy": 12,
+                "cx": 8,
+                "cy": 8,
+                "px": 4,
+                "py": 4
+            }
+        }
+    },
+    {
+        "id": "ui_tab_home",
+        "type": "ui_tab",
+        "name": "🏠 Giám Sát Điện Năng Gia Đình",
+        "icon": "fa-bolt",
+        "order": 1,
+        "disabled": false,
+        "hidden": false
+    },
+    {
+        "id": "ui_group_realtime",
+        "type": "ui_group",
+        "name": "⚡ 1. Thông Số Điện Lưới Thời Gian Thực (PZEM-004T)",
+        "tab": "ui_tab_home",
+        "order": 1,
+        "disp": true,
+        "width": "11",
+        "collapse": false
+    },
+    {
+        "id": "ui_group_cost_ctrl",
+        "type": "ui_group",
+        "name": "💰 2. Chi Phí Tiêu Thụ & Điều Khiển Hai Chiều (MQTT)",
+        "tab": "ui_tab_home",
+        "order": 2,
+        "disp": true,
+        "width": "11",
+        "collapse": false
+    },
+    {
+        "id": "ui_group_charts",
+        "type": "ui_group",
+        "name": "📈 3. Biểu Đồ Phân Tích Công Suất Trực Tuyến",
+        "tab": "ui_tab_home",
+        "order": 3,
+        "disp": true,
+        "width": "22",
+        "collapse": false
+    },
+    {
+        "id": "ui_group_mysql",
+        "type": "ui_group",
+        "name": "🗄️ 4. Lịch Sử Lưu Trữ Cơ Sở Dữ Liệu MySQL (smart_energy_db)",
+        "tab": "ui_tab_home",
+        "order": 4,
+        "disp": true,
+        "width": "22",
+        "collapse": false
+    },
+    {
+        "id": "ui_global_css",
+        "type": "ui_template",
+        "z": "tab_smart_energy",
+        "group": "ui_group_realtime",
+        "name": "CSS Giao diện Hiện đại",
+        "order": 99,
+        "width": 0,
+        "height": 0,
+        "format": "<style>\n  /* Bo góc và đổ bóng hiện đại cho các Group Card */\n  .nr-dashboard-cardpanel {\n    border-radius: 12px !important;\n    border: 1px solid #1e293b !important;\n    box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.5) !important;\n    overflow: hidden;\n  }\n  .nr-dashboard-cardtitle {\n    font-weight: 700 !important;\n    font-size: 15px !important;\n    letter-spacing: 0.2px;\n    padding: 12px 16px 8px 16px !important;\n    border-bottom: 1px solid rgba(56, 189, 248, 0.15);\n  }\n  /* Nút bấm đẹp, không bị cắt chữ */\n  .nr-dashboard-button .md-button {\n    border-radius: 8px !important;\n    font-weight: 600 !important;\n    letter-spacing: 0.3px;\n    text-transform: none !important;\n    font-size: 13.5px !important;\n  }\n  /* KPI Cards trong Group 1 & Group 2 */\n  .kpi-grid-4 {\n    display: grid;\n    grid-template-columns: repeat(4, 1fr);\n    gap: 10px;\n    height: 100%;\n    align-items: center;\n    padding: 4px 2px;\n  }\n  .kpi-grid-2 {\n    display: grid;\n    grid-template-columns: 1fr 1fr;\n    gap: 12px;\n    height: 100%;\n    align-items: center;\n    padding: 4px 2px;\n  }\n  .kpi-box {\n    background: linear-gradient(145deg, #1e293b, #0f172a);\n    border: 1px solid #334155;\n    border-radius: 10px;\n    padding: 10px 12px;\n    display: flex;\n    flex-direction: column;\n    justify-content: center;\n  }\n  .kpi-label {\n    font-size: 12px;\n    color: #94a3b8;\n    margin-bottom: 4px;\n    white-space: nowrap;\n  }\n  .kpi-val {\n    font-size: 20px;\n    font-weight: 700;\n    color: #f8fafc;\n    white-space: nowrap;\n  }\n  .kpi-val.cyan { color: #38bdf8; }\n  .kpi-val.green { color: #34d399; }\n  .kpi-val.amber { color: #fbbf24; }\n  .status-banner {\n    border-radius: 8px;\n    padding: 9px 14px;\n    font-weight: 700;\n    font-size: 13.5px;\n    display: flex;\n    align-items: center;\n    justify-content: space-between;\n    border: 1px solid transparent;\n  }\n  .status-normal {\n    background: rgba(16, 185, 129, 0.15);\n    border-color: rgba(16, 185, 129, 0.4);\n    color: #34d399;\n  }\n  .status-overload {\n    background: rgba(239, 68, 68, 0.2);\n    border-color: rgba(239, 68, 68, 0.5);\n    color: #f87171;\n  }\n  .status-warn {\n    background: rgba(245, 158, 11, 0.2);\n    border-color: rgba(245, 158, 11, 0.5);\n    color: #fbbf24;\n  }\n  .status-off {\n    background: rgba(100, 116, 139, 0.25);\n    border-color: rgba(148, 163, 184, 0.4);\n    color: #cbd5e1;\n  }\n</style>",
+        "storeOutMessages": true,
+        "fwdInMessages": true,
+        "resendOnRefresh": true,
+        "templateScope": "global",
+        "className": "",
+        "x": 180,
+        "y": 60,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "mqtt_in_telemetry",
+        "type": "mqtt in",
+        "z": "tab_smart_energy",
+        "name": "Nhận dữ liệu PZEM-004T (MQTT)",
+        "topic": "home/energy/telemetry",
+        "qos": "0",
+        "datatype": "json",
+        "broker": "mqtt_broker_local",
+        "nl": false,
+        "rap": true,
+        "rh": 0,
+        "inputs": 0,
+        "x": 170,
+        "y": 160,
+        "wires": [
+            [
+                "func_process_telemetry"
+            ]
+        ]
+    },
+    {
+        "id": "func_process_telemetry",
+        "type": "function",
+        "z": "tab_smart_energy",
+        "name": "Xử lý dữ liệu & Kiểm tra ngưỡng",
+        "func": "let d = msg.payload;\nif (!d || typeof d !== 'object') return null;\n\nlet threshold = flow.get('power_threshold') || 3000;\n\n// Xác định trạng thái cảnh báo\nlet statusCode = 'NORMAL';\nlet statusLabel = '🟢 HỆ THỐNG BÌNH THƯỜNG (Ổn định)';\nlet statusClass = 'status-normal';\n\nif (d.relay === 'OFF') {\n    statusCode = 'OFF';\n    statusLabel = '⚫ ĐÃ NGẮT APTOMAT TỔNG (Relay OFF)';\n    statusClass = 'status-off';\n} else if (d.power > threshold) {\n    statusCode = 'OVERLOAD';\n    statusLabel = `🔴 CẢNH BÁO QUÁ TẢI (${d.power}W > Ngưỡng ${threshold}W)!`;\n    statusClass = 'status-overload';\n} else if (d.voltage < 200) {\n    statusCode = 'UNDER_VOLTAGE';\n    statusLabel = `🟡 CẢNH BÁO SỤT ÁP LƯỚI (${d.voltage}V < 200V)!`;\n    statusClass = 'status-warn';\n} else if (d.voltage > 240) {\n    statusCode = 'OVER_VOLTAGE';\n    statusLabel = `🔴 CẢNH BÁO QUÁ ÁP (${d.voltage}V > 240V)!`;\n    statusClass = 'status-overload';\n}\n\nlet rooms = d.rooms || { living_room: 0, kitchen: 0, bedroom: 0 };\nlet costStr = Number(d.cost_vnd || Math.round(d.energy * 2500)).toLocaleString('vi-VN');\n\n// 1. Điện áp & Công suất cho 2 đồng hồ Gauge\nlet msgU = { payload: d.voltage };\nlet msgP = { payload: d.power, topic: 'Tổng công suất (W)' };\n\n// 2. Gói tin tổng hợp cho thẻ KPI Group 1 & Group 2\nlet msgKPI = {\n    payload: {\n        voltage: d.voltage,\n        current: Number(d.current).toFixed(2),\n        power: d.power,\n        energy: Number(d.energy).toFixed(3),\n        pf: Number(d.pf).toFixed(2),\n        frequency: Number(d.frequency).toFixed(1),\n        cost_vnd: costStr,\n        relay: d.relay || 'ON',\n        threshold: threshold,\n        statusCode: statusCode,\n        statusLabel: statusLabel,\n        statusClass: statusClass,\n        rooms: rooms\n    }\n};\n\n// 3. Đồ thị từng phòng\nlet msgRoom1 = { topic: 'Phòng khách', payload: rooms.living_room };\nlet msgRoom2 = { topic: 'Nhà bếp', payload: rooms.kitchen };\nlet msgRoom3 = { topic: 'Phòng ngủ', payload: rooms.bedroom };\n\n// 4. Chuẩn bị câu lệnh INSERT vào MySQL định kỳ (mỗi 3 gói tin ~ 6 giây hoặc khi có sự cố)\nlet counter = (flow.get('sql_counter') || 0) + 1;\nflow.set('sql_counter', counter);\nlet msgSQLInsert = null;\n\nif (counter % 3 === 0 || statusCode === 'OVERLOAD' || statusCode === 'UNDER_VOLTAGE') {\n    let sql = `INSERT INTO energy_logs (device_id, voltage, current_amp, power_watt, energy_kwh, power_factor, frequency, living_room_w, kitchen_w, bedroom_w, relay_state, status_alert) VALUES ('${d.device_id || 'ESP32_PZEM_MAIN'}', ${d.voltage}, ${d.current}, ${d.power}, ${d.energy}, ${d.pf}, ${d.frequency}, ${rooms.living_room}, ${rooms.kitchen}, ${rooms.bedroom}, '${d.relay || 'ON'}', '${statusCode}');`;\n    msgSQLInsert = { topic: sql, payload: d };\n}\n\nreturn [\n    msgU,\n    msgP,\n    msgKPI,\n    [msgRoom1, msgRoom2, msgRoom3],\n    msgSQLInsert\n];",
+        "outputs": 5,
+        "noerr": 0,
+        "initialize": "flow.set('power_threshold', 3000);\nflow.set('sql_counter', 0);",
+        "finalize": "",
+        "libs": [],
+        "x": 460,
+        "y": 160,
+        "wires": [
+            [
+                "gauge_voltage"
+            ],
+            [
+                "gauge_power",
+                "chart_line_power"
+            ],
+            [
+                "ui_kpi_realtime",
+                "ui_kpi_cost",
+                "ui_status_banner"
+            ],
+            [
+                "chart_pie_rooms",
+                "chart_line_power"
+            ],
+            [
+                "mysql_insert_node"
+            ]
+        ]
+    },
+    {
+        "id": "gauge_voltage",
+        "type": "ui_gauge",
+        "z": "tab_smart_energy",
+        "name": "Điện áp (V)",
+        "group": "ui_group_realtime",
+        "order": 1,
+        "width": "5",
+        "height": "4",
+        "gtype": "gage",
+        "title": "Điện Áp Lưới (U)",
+        "label": "Volts (V)",
+        "format": "{{value}}",
+        "min": "175",
+        "max": "250",
+        "colors": [
+            "#f59e0b",
+            "#10b981",
+            "#ef4444"
+        ],
+        "seg1": "200",
+        "seg2": "235",
+        "x": 810,
+        "y": 60,
+        "wires": []
+    },
+    {
+        "id": "gauge_power",
+        "type": "ui_gauge",
+        "z": "tab_smart_energy",
+        "name": "Công suất (W)",
+        "group": "ui_group_realtime",
+        "order": 2,
+        "width": "6",
+        "height": "4",
+        "gtype": "gage",
+        "title": "Tổng Công Suất Tiêu Thụ (P)",
+        "label": "Watts (W)",
+        "format": "{{value}}",
+        "min": 0,
+        "max": "4500",
+        "colors": [
+            "#10b981",
+            "#f59e0b",
+            "#ef4444"
+        ],
+        "seg1": "2200",
+        "seg2": "3000",
+        "x": 820,
+        "y": 110,
+        "wires": []
+    },
+    {
+        "id": "ui_kpi_realtime",
+        "type": "ui_template",
+        "z": "tab_smart_energy",
+        "group": "ui_group_realtime",
+        "name": "4 Thẻ Thông Số Điện (I, f, PF, Relay)",
+        "order": 3,
+        "width": "11",
+        "height": "2",
+        "format": "<div class=\"kpi-grid-4\">\n  <div class=\"kpi-box\">\n    <div class=\"kpi-label\">⚡ Dòng điện (I)</div>\n    <div class=\"kpi-val cyan\">{{msg.payload.current || '0.00'}} A</div>\n  </div>\n  <div class=\"kpi-box\">\n    <div class=\"kpi-label\">🔄 Tần số (f)</div>\n    <div class=\"kpi-val\">{{msg.payload.frequency || '50.0'}} Hz</div>\n  </div>\n  <div class=\"kpi-box\">\n    <div class=\"kpi-label\">📐 Hệ số Cos(φ)</div>\n    <div class=\"kpi-val green\">{{msg.payload.pf || '0.92'}}</div>\n  </div>\n  <div class=\"kpi-box\">\n    <div class=\"kpi-label\">🔌 Aptomat Tổng</div>\n    <div class=\"kpi-val\" ng-style=\"{'color': msg.payload.relay === 'OFF' ? '#f87171' : '#34d399'}\">\n      {{msg.payload.relay || 'ON'}}\n    </div>\n  </div>\n</div>",
+        "storeOutMessages": true,
+        "fwdInMessages": true,
+        "resendOnRefresh": true,
+        "templateScope": "local",
+        "className": "",
+        "x": 870,
+        "y": 160,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "ui_kpi_cost",
+        "type": "ui_template",
+        "z": "tab_smart_energy",
+        "group": "ui_group_cost_ctrl",
+        "name": "Thẻ Điện Năng & Tiền Điện EVN",
+        "order": 1,
+        "width": "11",
+        "height": "2",
+        "format": "<div class=\"kpi-grid-2\">\n  <div class=\"kpi-box\">\n    <div class=\"kpi-label\">🔋 Điện năng tích lũy (Công tơ)</div>\n    <div class=\"kpi-val cyan\">{{msg.payload.energy || '125.160'}} <span style=\"font-size:14px; font-weight:500;\">kWh</span></div>\n  </div>\n  <div class=\"kpi-box\">\n    <div class=\"kpi-label\">💵 Tiền điện bậc thang EVN (gồm 8% VAT)</div>\n    <div class=\"kpi-val amber\">{{msg.payload.cost_vnd || '264.475'}} <span style=\"font-size:14px; font-weight:500;\">VNĐ</span></div>\n  </div>\n</div>",
+        "storeOutMessages": true,
+        "fwdInMessages": true,
+        "resendOnRefresh": true,
+        "templateScope": "local",
+        "className": "",
+        "x": 860,
+        "y": 210,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "ui_status_banner",
+        "type": "ui_template",
+        "z": "tab_smart_energy",
+        "group": "ui_group_cost_ctrl",
+        "name": "Banner Trạng Thái Cảnh Báo",
+        "order": 2,
+        "width": "11",
+        "height": "1",
+        "format": "<div class=\"status-banner\" ng-class=\"msg.payload.statusClass || 'status-normal'\">\n  <span>{{msg.payload.statusLabel || '🟢 HỆ THỐNG BÌNH THƯỜNG (Ổn định)'}}</span>\n  <span style=\"font-size: 12px; opacity: 0.9;\">Ngưỡng: {{msg.payload.threshold || 3000}} W</span>\n</div>",
+        "storeOutMessages": true,
+        "fwdInMessages": true,
+        "resendOnRefresh": true,
+        "templateScope": "local",
+        "className": "",
+        "x": 850,
+        "y": 260,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "slider_threshold",
+        "type": "ui_slider",
+        "z": "tab_smart_energy",
+        "name": "Ngưỡng cảnh báo",
+        "label": "⚠️ Cài đặt ngưỡng báo quá tải (W):",
+        "tooltip": "Kéo để chỉnh ngưỡng báo động công suất",
+        "group": "ui_group_cost_ctrl",
+        "order": 3,
+        "width": "11",
+        "height": "1",
+        "passthru": true,
+        "outs": "end",
+        "topic": "threshold",
+        "topicType": "str",
+        "min": "1000",
+        "max": "4500",
+        "step": "100",
+        "x": 160,
+        "y": 320,
+        "wires": [
+            [
+                "func_save_threshold"
+            ]
+        ]
+    },
+    {
+        "id": "func_save_threshold",
+        "type": "function",
+        "z": "tab_smart_energy",
+        "name": "Lưu ngưỡng cảnh báo",
+        "func": "flow.set('power_threshold', Number(msg.payload));\nreturn null;",
+        "outputs": 1,
+        "noerr": 0,
+        "x": 410,
+        "y": 320,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "dropdown_scenario",
+        "type": "ui_dropdown",
+        "z": "tab_smart_energy",
+        "name": "Kịch bản mô phỏng",
+        "label": "🎭 Kịch bản giả lập tải:",
+        "tooltip": "Chọn kịch bản giả lập gửi lệnh MQTT tới Python",
+        "place": "Chọn kịch bản mô phỏng",
+        "group": "ui_group_cost_ctrl",
+        "order": 4,
+        "width": "11",
+        "height": "1",
+        "passthru": false,
+        "multiple": false,
+        "options": [
+            {
+                "label": "🏠 1. Sinh hoạt bình thường (~1.2kW - 2.1kW)",
+                "value": "normal",
+                "type": "str"
+            },
+            {
+                "label": "🔥 2. Cao điểm Quá tải: Bếp từ + Bình nóng lạnh (>3.3kW)",
+                "value": "overload",
+                "type": "str"
+            },
+            {
+                "label": "⚡ 3. Sự cố Sụt áp lưới điện (<195V)",
+                "value": "voltage_drop",
+                "type": "str"
+            },
+            {
+                "label": "🌙 4. Ban đêm Tiết kiệm điện (~450W)",
+                "value": "night",
+                "type": "str"
+            }
+        ],
+        "payload": "",
+        "topic": "home/energy/control",
+        "topicType": "str",
+        "x": 150,
+        "y": 380,
+        "wires": [
+            [
+                "func_format_scenario_cmd"
+            ]
+        ]
+    },
+    {
+        "id": "func_format_scenario_cmd",
+        "type": "function",
+        "z": "tab_smart_energy",
+        "name": "Tạo lệnh JSON Scenario",
+        "func": "msg.topic = 'home/energy/control';\nmsg.payload = JSON.stringify({ scenario: msg.payload });\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "x": 410,
+        "y": 380,
+        "wires": [
+            [
+                "mqtt_out_control"
+            ]
+        ]
+    },
+    {
+        "id": "switch_relay",
+        "type": "ui_switch",
+        "z": "tab_smart_energy",
+        "name": "Aptomat Tổng",
+        "label": "🔌 Đóng / Ngắt Aptomat Tổng Từ Xa (MQTT Relay):",
+        "tooltip": "Bật/Tắt Relay tổng gửi lệnh về Python Simulator",
+        "group": "ui_group_cost_ctrl",
+        "order": 5,
+        "width": "11",
+        "height": "1",
+        "passthru": false,
+        "decouple": "false",
+        "topic": "home/energy/control",
+        "topicType": "str",
+        "style": "",
+        "onvalue": "true",
+        "onvalueType": "bool",
+        "onicon": "",
+        "oncolor": "",
+        "offvalue": "false",
+        "offvalueType": "bool",
+        "officon": "",
+        "offcolor": "",
+        "animate": true,
+        "x": 140,
+        "y": 440,
+        "wires": [
+            [
+                "func_format_relay_cmd"
+            ]
+        ]
+    },
+    {
+        "id": "func_format_relay_cmd",
+        "type": "function",
+        "z": "tab_smart_energy",
+        "name": "Tạo lệnh JSON Relay",
+        "func": "msg.topic = 'home/energy/control';\nmsg.payload = JSON.stringify({ relay: Boolean(msg.payload) });\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "x": 400,
+        "y": 440,
+        "wires": [
+            [
+                "mqtt_out_control"
+            ]
+        ]
+    },
+    {
+        "id": "mqtt_out_control",
+        "type": "mqtt out",
+        "z": "tab_smart_energy",
+        "name": "Gửi lệnh điều khiển (MQTT Out)",
+        "topic": "home/energy/control",
+        "qos": "0",
+        "retain": "false",
+        "respTopic": "",
+        "contentType": "",
+        "userProps": "",
+        "correl": "",
+        "expiry": "",
+        "broker": "mqtt_broker_local",
+        "x": 690,
+        "y": 410,
+        "wires": []
+    },
+    {
+        "id": "chart_line_power",
+        "type": "ui_chart",
+        "z": "tab_smart_energy",
+        "name": "Đồ thị Công suất (W)",
+        "group": "ui_group_charts",
+        "order": 1,
+        "width": "15",
+        "height": "6",
+        "label": "📈 Đồ Thị Biến Thiên Công Suất Thời Gian Thực (W)",
+        "chartType": "line",
+        "legend": "true",
+        "xformat": "HH:mm:ss",
+        "interpolate": "smooth",
+        "nodata": "Đang nhận dữ liệu từ MQTT...",
+        "dot": false,
+        "ymin": "0",
+        "ymax": "4500",
+        "removeOlder": "5",
+        "removeOlderPoints": "80",
+        "removeOlderUnit": "60",
+        "cutout": 0,
+        "useOneColor": false,
+        "useUTC": false,
+        "colors": [
+            "#ef4444",
+            "#38bdf8",
+            "#f59e0b",
+            "#10b981",
+            "#8b5cf6",
+            "#ec4899",
+            "#14b8a6",
+            "#f97316",
+            "#64748b"
+        ],
+        "outputs": 1,
+        "useDifferentColor": false,
+        "x": 1140,
+        "y": 120,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "chart_pie_rooms",
+        "type": "ui_chart",
+        "z": "tab_smart_energy",
+        "name": "Tỷ trọng theo phòng",
+        "group": "ui_group_charts",
+        "order": 2,
+        "width": "7",
+        "height": "6",
+        "label": "🥧 Tỷ Trọng Công Suất Các Phòng (W)",
+        "chartType": "pie",
+        "legend": "true",
+        "xformat": "HH:mm:ss",
+        "interpolate": "linear",
+        "nodata": "Đang chờ dữ liệu...",
+        "dot": false,
+        "ymin": "",
+        "ymax": "",
+        "removeOlder": 1,
+        "removeOlderPoints": "",
+        "removeOlderUnit": "3600",
+        "cutout": "40",
+        "useOneColor": false,
+        "useUTC": false,
+        "colors": [
+            "#38bdf8",
+            "#f59e0b",
+            "#10b981",
+            "#ef4444",
+            "#8b5cf6",
+            "#ec4899",
+            "#14b8a6",
+            "#f97316",
+            "#64748b"
+        ],
+        "outputs": 1,
+        "useDifferentColor": false,
+        "x": 1140,
+        "y": 200,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "mysql_insert_node",
+        "type": "mysql",
+        "z": "tab_smart_energy",
+        "mydb": "mysql_db_config",
+        "name": "Ghi Log vào MySQL (energy_logs)",
+        "x": 860,
+        "y": 380,
+        "wires": [
+            [
+                "func_build_select_all"
+            ]
+        ]
+    },
+    {
+        "id": "inject_init_ui",
+        "type": "inject",
+        "z": "tab_smart_energy",
+        "name": "Khởi tạo UI & Tải MySQL",
+        "props": [
+            {
+                "p": "payload"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": true,
+        "onceDelay": "1.0",
+        "topic": "",
+        "payload": "true",
+        "payloadType": "bool",
+        "x": 170,
+        "y": 540,
+        "wires": [
+            [
+                "switch_relay",
+                "func_init_defaults",
+                "func_build_select_all"
+            ]
+        ]
+    },
+    {
+        "id": "func_init_defaults",
+        "type": "function",
+        "z": "tab_smart_energy",
+        "name": "Đặt ngưỡng 3000W & Kịch bản",
+        "func": "return [\n    { payload: 3000 },\n    { payload: 'normal' }\n];",
+        "outputs": 2,
+        "noerr": 0,
+        "x": 430,
+        "y": 500,
+        "wires": [
+            [
+                "slider_threshold"
+            ],
+            [
+                "dropdown_scenario"
+            ]
+        ]
+    },
+    {
+        "id": "btn_refresh_mysql",
+        "type": "ui_button",
+        "z": "tab_smart_energy",
+        "name": "Tải 12 bản ghi mới nhất",
+        "group": "ui_group_mysql",
+        "order": 1,
+        "width": "6",
+        "height": "1",
+        "passthru": false,
+        "label": "🔄 Tải 12 bản ghi mới nhất từ MySQL",
+        "tooltip": "Truy vấn SELECT từ bảng energy_logs",
+        "color": "#ffffff",
+        "bgcolor": "#0284c7",
+        "icon": "",
+        "payload": "all",
+        "payloadType": "str",
+        "topic": "query",
+        "topicType": "str",
+        "x": 170,
+        "y": 600,
+        "wires": [
+            [
+                "func_build_select_all"
+            ]
+        ]
+    },
+    {
+        "id": "btn_filter_overload",
+        "type": "ui_button",
+        "z": "tab_smart_energy",
+        "name": "Lọc bản ghi Sự cố / Quá tải",
+        "group": "ui_group_mysql",
+        "order": 2,
+        "width": "6",
+        "height": "1",
+        "passthru": false,
+        "label": "⚠️ Lọc lịch sử Quá tải / Sự cố",
+        "tooltip": "Chỉ truy vấn các bản ghi có status_alert != NORMAL",
+        "color": "#ffffff",
+        "bgcolor": "#d97706",
+        "icon": "",
+        "payload": "alert",
+        "payloadType": "str",
+        "topic": "query",
+        "topicType": "str",
+        "x": 180,
+        "y": 660,
+        "wires": [
+            [
+                "func_build_select_alert"
+            ]
+        ]
+    },
+    {
+        "id": "text_mysql_summary",
+        "type": "ui_text",
+        "z": "tab_smart_energy",
+        "group": "ui_group_mysql",
+        "order": 3,
+        "width": "10",
+        "height": "1",
+        "name": "Thống kê MySQL",
+        "label": "📊 Thống kê truy vấn MySQL:",
+        "format": "{{msg.payload}}",
+        "layout": "row-spread",
+        "x": 1060,
+        "y": 560,
+        "wires": []
+    },
+    {
+        "id": "func_build_select_all",
+        "type": "function",
+        "z": "tab_smart_energy",
+        "name": "SQL: SELECT 12 bản ghi mới nhất",
+        "func": "msg.topic = \"SELECT id, recorded_at, voltage, current_amp, power_watt, energy_kwh, power_factor, living_room_w, kitchen_w, bedroom_w, relay_state, status_alert FROM energy_logs ORDER BY id DESC LIMIT 12;\";\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "x": 480,
+        "y": 600,
+        "wires": [
+            [
+                "mysql_select_node"
+            ]
+        ]
+    },
+    {
+        "id": "func_build_select_alert",
+        "type": "function",
+        "z": "tab_smart_energy",
+        "name": "SQL: SELECT các bản ghi sự cố",
+        "func": "msg.topic = \"SELECT id, recorded_at, voltage, current_amp, power_watt, energy_kwh, power_factor, living_room_w, kitchen_w, bedroom_w, relay_state, status_alert FROM energy_logs WHERE status_alert != 'NORMAL' ORDER BY id DESC LIMIT 12;\";\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "x": 480,
+        "y": 660,
+        "wires": [
+            [
+                "mysql_select_node"
+            ]
+        ]
+    },
+    {
+        "id": "mysql_select_node",
+        "type": "mysql",
+        "z": "tab_smart_energy",
+        "mydb": "mysql_db_config",
+        "name": "Truy vấn MySQL (SELECT)",
+        "x": 770,
+        "y": 620,
+        "wires": [
+            [
+                "func_format_mysql_table"
+            ]
+        ]
+    },
+    {
+        "id": "func_format_mysql_table",
+        "type": "function",
+        "z": "tab_smart_energy",
+        "name": "Chuẩn hóa dữ liệu bảng & Thống kê",
+        "func": "let rows = Array.isArray(msg.payload) ? msg.payload : [];\nlet maxP = 0;\nlet sumU = 0;\nfor (let r of rows) {\n    if (Number(r.power_watt) > maxP) maxP = Number(r.power_watt);\n    sumU += Number(r.voltage || 0);\n}\nlet avgU = rows.length > 0 ? (sumU / rows.length).toFixed(1) : '0.0';\nlet summaryMsg = {\n    payload: `Hiển thị ${rows.length} bản ghi | U_tb = ${avgU}V | Công suất đỉnh P_max = ${maxP}W`\n};\nreturn [\n    { payload: rows },\n    summaryMsg\n];",
+        "outputs": 2,
+        "noerr": 0,
+        "x": 1030,
+        "y": 620,
+        "wires": [
+            [
+                "ui_template_mysql_table"
+            ],
+            [
+                "text_mysql_summary"
+            ]
+        ]
+    },
+    {
+        "id": "ui_template_mysql_table",
+        "type": "ui_template",
+        "z": "tab_smart_energy",
+        "group": "ui_group_mysql",
+        "name": "Bảng dữ liệu MySQL (HTML Table)",
+        "order": 4,
+        "width": "22",
+        "height": "7",
+        "format": "<style>\n  .iot-sql-table {\n    width: 100%;\n    border-collapse: collapse;\n    font-size: 13.5px;\n    color: #e2e8f0;\n  }\n  .iot-sql-table th {\n    background-color: #0f172a;\n    color: #38bdf8;\n    padding: 10px 12px;\n    text-align: center;\n    border-bottom: 2px solid #334155;\n    position: sticky;\n    top: 0;\n    white-space: nowrap;\n    z-index: 2;\n  }\n  .iot-sql-table td {\n    padding: 9px 12px;\n    text-align: center;\n    border-bottom: 1px solid #1e293b;\n    white-space: nowrap;\n  }\n  .iot-sql-table tr:nth-child(even) {\n    background-color: rgba(15, 23, 42, 0.45);\n  }\n  .iot-sql-table tr:hover {\n    background-color: rgba(56, 189, 248, 0.12);\n  }\n  .badge-normal {\n    background: rgba(16, 185, 129, 0.2);\n    color: #34d399;\n    padding: 4px 10px;\n    border-radius: 12px;\n    font-weight: 600;\n    font-size: 12px;\n  }\n  .badge-overload {\n    background: rgba(239, 68, 68, 0.25);\n    color: #f87171;\n    padding: 4px 10px;\n    border-radius: 12px;\n    font-weight: 600;\n    font-size: 12px;\n  }\n  .badge-warn {\n    background: rgba(245, 158, 11, 0.25);\n    color: #fbbf24;\n    padding: 4px 10px;\n    border-radius: 12px;\n    font-weight: 600;\n    font-size: 12px;\n  }\n</style>\n\n<div style=\"overflow-x: auto; max-height: 330px;\">\n  <table class=\"iot-sql-table\">\n    <thead>\n      <tr>\n        <th>Mã ID</th>\n        <th>Thời gian ghi (MySQL)</th>\n        <th>Điện áp (U)</th>\n        <th>Dòng điện (I)</th>\n        <th>Tổng Công Suất (P)</th>\n        <th>Điện năng (kWh)</th>\n        <th>Hệ số Cos(φ)</th>\n        <th>Phòng khách</th>\n        <th>Nhà bếp</th>\n        <th>Phòng ngủ</th>\n        <th>Aptomat</th>\n        <th>Trạng thái</th>\n      </tr>\n    </thead>\n    <tbody>\n      <tr ng-repeat=\"row in msg.payload\">\n        <td style=\"color: #94a3b8;\">#{{row.id}}</td>\n        <td>{{row.recorded_at}}</td>\n        <td><b>{{row.voltage}} V</b></td>\n        <td>{{row.current_amp}} A</td>\n        <td style=\"color: #38bdf8; font-weight: 700;\">{{row.power_watt}} W</td>\n        <td style=\"color: #fbbf24;\">{{row.energy_kwh}} kWh</td>\n        <td>{{row.power_factor}}</td>\n        <td>{{row.living_room_w}} W</td>\n        <td>{{row.kitchen_w}} W</td>\n        <td>{{row.bedroom_w}} W</td>\n        <td><b>{{row.relay_state}}</b></td>\n        <td>\n          <span ng-class=\"{\n            'badge-normal': row.status_alert === 'NORMAL',\n            'badge-overload': row.status_alert === 'OVERLOAD',\n            'badge-warn': row.status_alert !== 'NORMAL' && row.status_alert !== 'OVERLOAD'\n          }\">\n            {{row.status_alert}}\n          </span>\n        </td>\n      </tr>\n      <tr ng-if=\"!msg.payload || msg.payload.length === 0\">\n        <td colspan=\"12\" style=\"padding: 24px; color: #94a3b8;\">Không có bản ghi nào phù hợp trong MySQL.</td>\n      </tr>\n    </tbody>\n  </table>\n</div>",
+        "storeOutMessages": true,
+        "fwdInMessages": true,
+        "resendOnRefresh": true,
+        "templateScope": "local",
+        "className": "",
+        "x": 1310,
+        "y": 600,
+        "wires": [
+            []
+        ]
+    }
+]

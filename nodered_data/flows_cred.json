@@ -1,0 +1,6 @@
+{
+    "mysql_db_config": {
+        "user": "root",
+        "password": ""
+    }
+}

@@ -1,0 +1,20 @@
+{
+  "name": "iot-energy-monitor",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "dependencies": {
+    "aedes": "^1.2.0",
+    "node-red": "^5.0.9",
+    "node-red-dashboard": "^3.6.6",
+    "node-red-node-mysql": "^3.0.4",
+    "node-red-node-ui-table": "^0.4.5"
+  }
+}
