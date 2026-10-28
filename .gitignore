@@ -3,3 +3,5 @@ __pycache__/
 *.pyc
 nodered_data/.config.*.backup
 nodered_data/lib/
+
+~$*.docx
